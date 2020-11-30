@@ -3,6 +3,7 @@ import socketio
 from threading import Timer
 from gamewindow import GameWindow
 from gamelog import GameLog
+from gamenode import Node
 
 from boardwidget import MyWidget, BoardWidget
 from PyQt5.QtGui import QIcon, QCloseEvent
@@ -170,7 +171,7 @@ class GameOnline(GameWindow):
         super().gameflow()
         self.board.setDisable()
         # if now is my turn
-        if self.gamelog.currentTurn == myTurn:
+        if Node(self.board.getState()).terminal() < 0 and self.gamelog.currentTurn == myTurn:
             # allow moves
             self.board.setEnable()
     

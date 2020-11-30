@@ -1,6 +1,7 @@
 from PyQt5.QtCore import *
 from gamewindow import GameWindow
 from minimax import Minimax
+from gamenode import Node
 
 
 class BotEngine(QThread):
@@ -21,7 +22,6 @@ class BotEngine(QThread):
     
     def run(self):
         nextState = self.botEngine.run(self.state)
-        print(nextState, "shite")
         self.finished.emit(nextState)
 
 
@@ -58,7 +58,7 @@ class GameWithBot(GameWindow):
         # handle normally
         super().gameflow()
         # if it is bot turn
-        if self.gamelog.currentTurn == self.botTurn:
+        if Node(self.board.getState()).terminal() < 0 and self.gamelog.currentTurn == self.botTurn:
             # make sure to disable moves
             self.board.setDisable()
             # run engine
@@ -71,5 +71,6 @@ if __name__ == "__main__":
     import sys
     from PyQt5.QtWidgets import QApplication
     app = QApplication(sys.argv)
-    clgt = GameWithBot("Black", "White", True, False)
+    wnd = GameWithBot("Black", "White", False)
+    wnd.show()
     sys.exit(app.exec())
