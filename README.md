@@ -1,6 +1,8 @@
 # pentago-client
 Play the Pentago game on computers locally or with other players [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 
+The project has 2 repositories. This is the client-side of the project. For the server-side, go to [pentago-server](https://github.com/ksk642/pentago-server).
+
 
 ## Installation
 
