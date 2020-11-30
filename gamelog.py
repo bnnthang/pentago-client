@@ -44,7 +44,7 @@ class PlayerNameplate(QLabel):
             color: {"black" if isWhite else "white"};
             font-size: 18px;
         """]
-        self.styles.append("border: 3px solid limegreen;\n" + self.styles[0])
+        self.styles.append("border: 3px solid limegreen;" + self.styles[0])
         # set normal style
         self.setStyleSheet(self.styles[0])
 
@@ -160,7 +160,7 @@ class GameLog(MyWidget):
         # init ui
         self.initUI(player1, player2, revertible)
         # initial move is 0
-        self.moveDecided(0, "Game started.")
+        self.moveDecided(0, "> Game started.")
 
     
     def initUI(self, player1, player2, revertible):
@@ -213,7 +213,7 @@ class GameLog(MyWidget):
         When a new move is made
         """
         # add log
-        self.addLog(f"{self.getName(self.currentTurn)} moved." if specialMsg == None else specialMsg, self.currentTurn, state)
+        self.addLog(f"> {self.getName(self.currentTurn)} moved." if specialMsg == None else specialMsg, self.currentTurn, state)
         # alter turn
         self.currentTurn = not self.currentTurn
         # change focus
@@ -252,7 +252,6 @@ class GameLog(MyWidget):
             # notify
             self.statusChanged.emit("Preview mode", 0)
         except:
-            print("error!")
             self.statusChanged.emit("Something went wrong!", self.STATUS_BAR_TIMEOUT)
     
     def getbackButtonClicked(self):
@@ -265,16 +264,13 @@ class GameLog(MyWidget):
     def revertButtonClicked(self):
         # get selected id
         selectedId = self.logList.selectedIndexes()[0].row()
-        print(selectedId)
-        print(self.logList.item(selectedId).player, self.currentTurn)
         # check validity
         if not self.logList.item(selectedId).isPreviousMove() or self.logList.item(selectedId).player == self.currentTurn:
-            self.statusChanged.emit("Can't revert to this move!", self.STATUS_BAR_TIMEOUT)
+            self.statusChanged.emit("Cannot revert to this move!", self.STATUS_BAR_TIMEOUT)
             return
         # delete unnecessary moves
         for i in range(self.logList.count() - 1, selectedId, -1):
             if self.logList.item(i).savedState >= 0:
-                print(i)
                 self.logList.takeItem(i)
         # update latest state
         self.latestState = self.logList.item(selectedId).savedState

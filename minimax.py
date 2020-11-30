@@ -38,8 +38,6 @@ class Minimax:
                 self.history[state] = -oo
             return self.history[state]
         
-        print(state)
-        
         if depth % 2 == 0:
             value = -oo
             for nextState in Node(state).possibleNextStates():
@@ -71,7 +69,6 @@ class Minimax:
     def run(self, state):
         self.history.clear()
         nextState = self.traverse(state)
-        print("visited: ", len(self.history))
         return nextState
 
 

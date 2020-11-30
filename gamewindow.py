@@ -90,11 +90,11 @@ class GameWindow(QMainWindow):
         msg = None
         # if game ended
         if winner == 0:
-            msg = "Game tie."
+            msg = "> Game tie."
         elif winner == 1:
-            msg = "Black won!"
+            msg = "> Black won!"
         elif winner == 2:
-            msg = "White won!"
+            msg = "> White won!"
         self.gamelog.moveDecided(self.board.getState(), msg)
     
     def closeEvent(self, a0: QCloseEvent):

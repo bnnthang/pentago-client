@@ -4,17 +4,16 @@ from threading import Timer
 from gamewindow import GameWindow
 from gamelog import GameLog
 
-from gamenode import Node
 from boardwidget import MyWidget, BoardWidget
 from PyQt5.QtGui import QIcon, QCloseEvent
 from PyQt5.QtWidgets import QStatusBar, QHBoxLayout, QApplication
 
 
-SERVER_URL = "https://pentago-server.herokuapp.com/:55644"
+SERVER_URL = "https://pentago-server.herokuapp.com/:39891"
 # SERVER_URL = "http://192.168.1.6:4602"
-OPPONENT_WAIT = 23.0
+OPPONENT_WAIT = 34.0
 
-sio = socketio.Client(reconnection_attempts=2)
+sio = socketio.Client(reconnection_attempts=5, reconnection_delay=3, reconnection_delay_max=23, request_timeout=30)
 myTurn = None
 myName = None
 moveFlag = None
@@ -112,8 +111,6 @@ class GameOnline(GameWindow):
             global myTurn
             if myTurn:
                 self.oppoMakeMove(int(state))
-            if Node(int(state)).terminal() >= 0:
-                sio.emit("ended")
         
         @sio.on("wmove")
         def receiveWhiteMove(state):
@@ -121,8 +118,6 @@ class GameOnline(GameWindow):
             global myTurn
             if not myTurn:
                 self.oppoMakeMove(int(state))
-            if Node(int(state)).terminal() >= 0:
-                sio.emit("ended")
         
         @sio.on("chat")
         def receiveChat(msg):
@@ -144,7 +139,7 @@ class GameOnline(GameWindow):
             # notify
             self.gamelog.addLog(f"You are {myName}.")
             # initial move
-            self.gamelog.addLog("Game started.", self.gamelog.currentTurn, 0)
+            self.gamelog.addLog("> Game started.", self.gamelog.currentTurn, 0)
             # alter turn
             self.gamelog.currentTurn = not self.gamelog.currentTurn
             # change focus
@@ -152,7 +147,6 @@ class GameOnline(GameWindow):
             # enable functions
             self.enableFlow()
             if self.gamelog.currentTurn != myTurn:
-                print(self.gamelog.currentTurn, myTurn)
                 self.board.setDisable()
 
         try:
@@ -187,6 +181,7 @@ class GameOnline(GameWindow):
     
     def oppoMakeMove(self, newState):
         self.board.setState(newState)
+        self.statusBar().clearMessage()
         self.board.finishMove.emit()
 
 
