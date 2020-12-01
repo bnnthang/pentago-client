@@ -35,12 +35,14 @@ class GameWithBot(GameWindow):
         self.botTurn = botTurn
         self.botEngine = BotEngine()
         self.botEngine.finished.connect(self.botMakeMove)
+        self.gamelog.addLog(f"You play as {'black' if botTurn else 'white'}")
         # show
         self.show()
         # run if bot starts
         if self.botTurn == self.gamelog.currentTurn:
             # make sure to disable moves
             self.board.setDisable()
+            self.gamelog.revertButton.setEnabled(False)
             # run engine
             self.botEngine.setState(self.board.getState())
             self.botEngine.start()

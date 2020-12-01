@@ -189,8 +189,6 @@ class Node:
         """
 
         def getScore(color):
-            totalScore = 0
-
             winner = self.terminal()
             if winner >= 0:
                 if winner == color:
@@ -211,7 +209,10 @@ class Node:
                     if flag:
                         advantage = len(nullifiers)
                         for q, c in nullifiers:
-                            if self.getCell(q, c) == 3 - color:
+                            if self.getCell(q, c) == color:
+                                advantage = 0
+                                break
+                            elif self.getCell(q, c) == 3 - color:
                                 advantage -= 1
                         sumScore += score[advantage]
                 return sumScore
