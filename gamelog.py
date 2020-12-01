@@ -178,6 +178,7 @@ class GameLog(MyWidget):
         self.logList = QListWidget(self)
         self.logList.setWordWrap(True)
         self.logList.clear()
+        self.logList.model().rowsInserted.connect(self.logList.scrollToBottom)
         self.layout().addWidget(self.logList)
         # chat frame
         chat_frame = MyWidget(self)
