@@ -14,14 +14,16 @@ class BotEngine(QThread):
 
     def __init__(self):
         super().__init__()
-        # self.botEngine = MCTS(1234)
-        self.botEngine = Minimax(3)
+        self.botEngine = Minimax()
     
     def setState(self, state):
         self.state = state
     
     def run(self):
+        import time
+        start_time = time.time()
         nextState = self.botEngine.run(self.state)
+        print("--- %s seconds ---" % (time.time() - start_time))
         self.finished.emit(nextState)
 
 
@@ -57,14 +59,18 @@ class GameWithBot(GameWindow):
         """
         # handle normally
         super().gameflow()
-        # if it is bot turn
-        if Node(self.board.getState()).terminal() < 0 and self.gamelog.currentTurn == self.botTurn:
-            # make sure to disable moves
-            self.board.setDisable()
-            # run engine
-            self.botEngine.setState(self.board.getState())
-            self.botEngine.start()
-            self.statusBar().showMessage("Thinking...")
+        if Node(self.board.getState()).terminal() >= 0:
+            self.gamelog.revertButton.setEnabled(False)
+        else:
+            # if it is bot turn
+            if self.gamelog.currentTurn == self.botTurn:
+                # make sure to disable moves
+                self.board.setDisable()
+                self.gamelog.revertButton.setEnabled(False)
+                # run engine
+                self.botEngine.setState(self.board.getState())
+                self.botEngine.start()
+                self.statusBar().showMessage("Thinking...")
             
 
 if __name__ == "__main__":

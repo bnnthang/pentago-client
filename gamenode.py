@@ -1,42 +1,5 @@
-POW_CELLS = [1, 3, 9, 27, 81, 243, 729, 2187, 6561]
-POW_QUARTERS = [1, 19683, 387420489, 7625597484987]
-ROTATE_CW = [(0, 6), (6, 8), (8, 2), (1, 3), (3, 7), (7, 5)]
-ROTATE_CCW = [(0, 2), (2, 8), (8, 6), (1, 5), (5, 7), (7, 3)]
-WINNING_LINES = [
-    ((1, 0), (1, 1), (1, 2), (0, 0), (0, 1)),
-    ((1, 1), (1, 2), (0, 0), (0, 1), (0, 2)),
-    ((1, 3), (1, 4), (1, 5), (0, 3), (0, 4)),
-    ((1, 4), (1, 5), (0, 3), (0, 4), (0, 5)),
-    ((1, 6), (1, 7), (1, 8), (0, 6), (0, 7)),
-    ((1, 7), (1, 8), (0, 6), (0, 7), (0, 8)),
-    ((2, 0), (2, 1), (2, 2), (3, 0), (3, 1)),
-    ((2, 1), (2, 2), (3, 0), (3, 1), (3, 2)),
-    ((2, 3), (2, 4), (2, 5), (3, 3), (3, 4)),
-    ((2, 4), (2, 5), (3, 3), (3, 4), (3, 5)),
-    ((2, 6), (2, 7), (2, 8), (3, 6), (3, 7)),
-    ((2, 7), (2, 8), (3, 6), (3, 7), (3, 8)),
-    ((1, 0), (1, 3), (1, 6), (2, 0), (2, 3)),
-    ((1, 3), (1, 6), (2, 0), (2, 3), (2, 6)),
-    ((1, 1), (1, 4), (1, 7), (2, 1), (2, 4)),
-    ((1, 4), (1, 7), (2, 1), (2, 4), (2, 7)),
-    ((1, 2), (1, 5), (1, 8), (2, 2), (2, 5)),
-    ((1, 5), (1, 8), (2, 2), (2, 5), (2, 8)),
-    ((0, 0), (0, 3), (0, 6), (3, 0), (3, 3)),
-    ((0, 3), (0, 6), (3, 0), (3, 3), (3, 6)),
-    ((0, 1), (0, 4), (0, 7), (3, 1), (3, 4)),
-    ((0, 4), (0, 7), (3, 1), (3, 4), (3, 7)),
-    ((0, 2), (0, 5), (0, 8), (3, 2), (3, 5)),
-    ((0, 5), (0, 8), (3, 2), (3, 5), (3, 8)),
-    ((1, 3), (1, 7), (2, 2), (3, 3), (3, 7)),
-    ((1, 1), (1, 5), (0, 6), (3, 1), (3, 5)),
-    ((1, 0), (1, 4), (1, 8), (3, 0), (3, 4)),
-    ((1, 4), (1, 8), (3, 0), (3, 4), (3, 8)),
-    ((0, 1), (0, 3), (1, 8), (2, 1), (2, 3)),
-    ((0, 5), (0, 7), (3, 0), (2, 5), (2, 7)),
-    ((0, 2), (0, 4), (0, 6), (2, 2), (2, 4)),
-    ((0, 4), (0, 6), (2, 2), (2, 4), (2, 6))
-]
-WEIGHTS = [0, 1, 3, 8, 13, 1000000000000000000]
+from data import *
+
 
 def getDigit(a: int, i: int, basePow: list) -> int:
     """
@@ -72,35 +35,35 @@ class Node:
     def setState(self, hashValue: int):
         self.state = hashValue
 
-    def __init__(self, state: int=0) -> None:
+    def __init__(self, state: int = 0) -> None:
         """
         Constructor
         """
         self.setState(state)
-    
+
     def getQuarter(self, index: int) -> int:
         """
         Get the state of a quarter
         """
         return getDigit(self.state, index, POW_QUARTERS)
-    
+
     def getCell(self, quarter: int, cell: int) -> int:
         """
         Get the state of a cell
         """
         return getDigit(self.getQuarter(quarter), cell, POW_CELLS)
-    
+
     def getState(self) -> int:
         return self.state
-    
+
     def rotate(self, quarter, swapList):
         """
         Rotate a quarter
         """
         for i, j in swapList:
             vi, vj = self.getCell(quarter, i), self.getCell(quarter, j)
-            self.state += (vj - vi) * POW_CELLS[i]  * POW_QUARTERS[quarter]
-            self.state += (vi - vj) * POW_CELLS[j]  * POW_QUARTERS[quarter]
+            self.state += (vj - vi) * POW_CELLS[i] * POW_QUARTERS[quarter]
+            self.state += (vi - vj) * POW_CELLS[j] * POW_QUARTERS[quarter]
 
     def countEmptyCells(self) -> int:
         """
@@ -111,7 +74,7 @@ class Node:
             for cell in range(9):
                 ret += self.getCell(quarter, cell) == 0
         return ret
-    
+
     def getEmptyCells(self) -> list:
         """
         Get a list of all empty cells
@@ -122,7 +85,7 @@ class Node:
                 if self.getCell(quarter, cell) == 0:
                     ret.append((quarter, cell))
         return ret
-    
+
     def terminal(self) -> int:
         """
         Check if the game ended
@@ -135,7 +98,7 @@ class Node:
         """
 
         def sameColorLine(color) -> bool:
-            for line in WINNING_LINES:
+            for line in LINES_5:
                 flag = True
                 for quarter, cell in line:
                     if self.getCell(quarter, cell) != color:
@@ -166,7 +129,7 @@ class Node:
                 else:
                     # game not ended
                     return -1
-    
+
     def possibleNextStates(self) -> list:
         """
         Get all possible next states
@@ -200,10 +163,10 @@ class Node:
                     ret += str(self.getCell(quarter, cell))
             ret += "\n"
         return ret
-    
+
     def __eq__(self, other):
         return self.__hash__() == other.__hash__()
-    
+
     def getTurn(self) -> int:
         """
         Get current turn
@@ -213,39 +176,64 @@ class Node:
         - 2: white
         """
         return self.countEmptyCells() % 2 + 1
-    
+
     def fillCell(self, quarter, cell):
         self.state += self.getTurn() * POW_CELLS[cell] * POW_QUARTERS[quarter]
-    
+
     def __hash__(self) -> int:
         return self.state
-    
+
     def eval(self):
         """
         Evaluation function
         """
 
         def getScore(color):
-            for length in range(5, 0, -1):
-                count = 0
-                for line in WINNING_LINES:
-                    for l in range(5 - length):
-                        flag = True
-                        for r in range(l, l + length):
-                            if self.getCell(line[r][0], line[r][1]) != color:
-                                flag = False
-                                break
-                        count += flag
-                if count > 0:
-                    return WEIGHTS[length] * count
-            return 0
+            totalScore = 0
+
+            winner = self.terminal()
+            if winner >= 0:
+                if winner == color:
+                    return WEIGHT_LINES_5
+                elif winner == 3 - color:
+                    return -WEIGHT_LINES_5
+                else:
+                    return 234
+
+            def analyzeLines(data, score):
+                sumScore = 0
+                for line, nullifiers in data:
+                    flag = True
+                    for q, c in line:
+                        if self.getCell(q, c) != color:
+                            flag = False
+                            break
+                    if flag:
+                        advantage = len(nullifiers)
+                        for q, c in nullifiers:
+                            if self.getCell(q, c) == 3 - color:
+                                advantage -= 1
+                        sumScore += score[advantage]
+                return sumScore
+            
+            def analyzeCriticalCells():
+                sumScore = 0
+                for i in range(2):
+                    for q, c in CRITICAL_CELLS[i]:
+                        if self.getCell(q, c) == color:
+                            sumScore += WEIGHT_CRITICAL_CELLS[i]
+                return sumScore
+            
+            return analyzeLines(LINES_3, WEIGHT_LINES_3) + analyzeLines(LINES_4, WEIGHT_LINES_4) + analyzeCriticalCells()
 
         return getScore(self.getTurn()) - getScore(3 - self.getTurn())
 
 
 if __name__ == "__main__":
-    # print(Node(2604627948033))
-    print(Node(3247695))
+    print(Node(67959325095502806 + 3**12))
+    print(Node(67959325095502806 + 3**12).eval())
+    # print(Node(98416).eval())
+    # print(Node(5115370998780).eval())
     # print(Node(5115112716510))
     # print(Node(38357817300))
     # for i in Node(5115112716288).possibleNextStates():

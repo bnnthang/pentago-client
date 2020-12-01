@@ -1,7 +1,9 @@
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
-from gamenode import ROTATE_CW, ROTATE_CCW, POW_CELLS, POW_QUARTERS, getDigit
+from gamenode import getDigit
+from data import ROTATE_CW, ROTATE_CCW, POW_CELLS, POW_QUARTERS
+
 
 # constants for cells
 CELL_RADIUS = 22

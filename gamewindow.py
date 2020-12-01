@@ -59,7 +59,7 @@ class GameWindow(QMainWindow):
         self.statusBar().showMessage("Welcome!", 3000)
         # connect signals
         self.board.finishMove.connect(self.gameflow) # connect signal to manage game flow
-        self.gamelog.enableMoves.connect(self.board.setEnable)
+        self.gamelog.enableMoves.connect(self.enableFlow)
         self.gamelog.disableMoves.connect(self.board.setDisable)
         self.gamelog.stateChanged.connect(self.board.setState)
         self.gamelog.statusChanged.connect(self.statusBar().showMessage)
@@ -90,7 +90,7 @@ class GameWindow(QMainWindow):
         msg = None
         # if game ended
         if winner == 0:
-            msg = "> Game tie."
+            msg = "> Game tied."
         elif winner == 1:
             msg = "> Black won!"
         elif winner == 2:
