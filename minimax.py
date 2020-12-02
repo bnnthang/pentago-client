@@ -53,7 +53,7 @@ class Minimax:
         # consider only some best next moves
         nextStates = Node(state).possibleNextStates()
 
-        nextStates.sort(key=preeval, reverse=True)
+        nextStates.sort(key=preeval)
         goodStates = nextStates[:self.GOOD_MOVES_LIMIT]
         for i in nextStates[self.GOOD_MOVES_LIMIT:]:
             self.history[i] = preeval(i)
